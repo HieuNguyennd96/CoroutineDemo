@@ -1,13 +1,17 @@
 package com.example.coroutinedemo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ProgressBar
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
+
+//this demo is base on demo of elye "https://github.com/elye/demo_android_coroutines_race"
+// in order to learning how coroutine works
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,29 +32,30 @@ class MainActivity : AppCompatActivity() {
     private fun startCoroutine() {
         resetRun()
 
-        greenJob =  GlobalScope.launch(Android)  {
-            startRunning(progressBlue,"Blue")
+        greenJob = GlobalScope.launch(Android) {
+            startRunning(progressBlue, "Blue")
         }
 
-        blueJob = GlobalScope.launch(Android)  {
-            startRunning(progressGreen,"Green")
+        blueJob = GlobalScope.launch(Android) {
+            startRunning(progressGreen, "Green")
         }
 
         orangeJob = GlobalScope.launch(Android) {
-            startRunning(progressOrange,"Orange")
+            startRunning(progressOrange, "Orange")
         }
 
     }
+
     // When delay coroutine return back resource for another process to execute
     // In this example when "delay(10)" execute,program will run blue -> green -> orange -> blue to the end
-    private suspend fun startRunning(progress: ProgressBar, name:String) {
+    private suspend fun startRunning(progress: ProgressBar, name: String) {
         progress.progress = 0
-        while (progress.progress < 1000 && !isEnd){
+        while (progress.progress < 1000 && !isEnd) {
             val bar = name
             delay(10)
             progress.progress += (0..10).random()
         }
-        if(!isEnd){
+        if (!isEnd) {
             isEnd = true
         }
     }
